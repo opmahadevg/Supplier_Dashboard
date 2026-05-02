@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Navigate, Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
 import logo from '@assets/logo.png'
 
@@ -119,7 +120,12 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen flex">
+    <motion.div
+      className="min-h-screen flex"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.28, ease: [0.25, 0.1, 0.25, 1] }}
+    >
       {/* ── Left panel ── */}
       <div className="hidden md:flex w-[44%] bg-[#0f00da] flex-col relative overflow-hidden p-10 text-white">
         <div className="absolute top-[-100px] right-[-100px] w-[380px] h-[380px] rounded-full bg-white/10 pointer-events-none" />
@@ -365,6 +371,6 @@ export default function Register() {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }

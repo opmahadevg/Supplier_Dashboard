@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Navigate, Link, useSearchParams } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
 import logo from '@assets/logo.png'
@@ -140,7 +141,12 @@ export default function Login() {
 
   return (
     <>
-    <div className="min-h-screen flex">
+    <motion.div
+      className="min-h-screen flex"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.28, ease: [0.25, 0.1, 0.25, 1] }}
+    >
       {/* ── Left panel ── */}
       <div className="hidden md:flex w-[44%] bg-[#0f00da] flex-col relative overflow-hidden p-10 text-white">
         {/* Decorative circles */}
@@ -391,7 +397,7 @@ export default function Login() {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
 
     {/* ── Forgot Password Modal ── */}
     {forgotOpen && (

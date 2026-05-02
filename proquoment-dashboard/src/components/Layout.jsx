@@ -1,5 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 import Sidebar from './Sidebar'
+import PageTransition from './PageTransition'
 
 export default function Layout() {
   const location = useLocation()
@@ -8,8 +10,16 @@ export default function Layout() {
   return (
     <div className="flex min-h-screen bg-white overflow-hidden">
       <Sidebar />
-      <main className={`flex-1 min-w-0 bg-white transition-all duration-200 ${isMessages ? 'overflow-hidden h-screen' : 'overflow-y-auto'}`}>
-        <Outlet />
+      <main
+        className={`flex-1 min-w-0 bg-white ${
+          isMessages ? 'overflow-hidden h-screen' : 'overflow-y-auto'
+        }`}
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          <PageTransition key={location.pathname}>
+            <Outlet />
+          </PageTransition>
+        </AnimatePresence>
       </main>
     </div>
   )

@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
 import { useSettings, formatAmount } from '../context/SettingsContext'
 import { getAlerts, getActivityLog } from '../lib/db'
@@ -24,6 +25,55 @@ function getGreeting() {
   return 'Good evening'
 }
 
+/* ── Animated counter hook ─────────────────────────────────── */
+function useCountUp(target, duration = 900) {
+  const [display, setDisplay] = useState(0)
+  const ref = useRef({ from: 0, to: target, start: null, raf: null })
+
+  useEffect(() => {
+    const entry = ref.current
+    cancelAnimationFrame(entry.raf)
+    entry.from = 0
+    entry.to = target
+    entry.start = null
+
+    function tick(now) {
+      if (!entry.start) entry.start = now
+      const elapsed = now - entry.start
+      const progress = Math.min(elapsed / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setDisplay(Math.round(entry.from + (entry.to - entry.from) * eased))
+      if (progress < 1) entry.raf = requestAnimationFrame(tick)
+    }
+    entry.raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(entry.raf)
+  }, [target, duration])
+
+  return display
+}
+
+/* ── Stat card with animated counter ──────────────────────── */
+function StatCard({ label, rawValue, prefix, suffix, icon, change, positive, delay = 0 }) {
+  const counted = useCountUp(rawValue, 900)
+  const displayStr = `${prefix ?? ''}${counted.toLocaleString()}${suffix ?? ''}`
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.28, delay, ease: [0.25, 0.1, 0.25, 1] }}
+      className="bg-white border border-[#ebebeb] rounded-2xl p-4"
+    >
+      <div className="flex items-center gap-2 mb-2">
+        <span className="material-symbols-outlined text-[18px] text-[#0f00da]">{icon}</span>
+        <span className="text-xs text-[#9e9e9e]">{label}</span>
+      </div>
+      <p className="text-2xl font-bold text-[#111111] tabular-nums">{displayStr}</p>
+      <p className={`text-xs mt-1 ${positive ? 'text-[#0f00da]' : 'text-[#ba1a1a]'}`}>{change}</p>
+    </motion.div>
+  )
+}
+
 export default function Home() {
   const [isNewUser] = useState(false)
   const [alertsList, setAlertsList] = useState(STATIC_ALERTS)
@@ -38,20 +88,21 @@ export default function Home() {
     getActivityLog().then(data => { if (data) setActivityList(data) })
   }, [])
 
-  const stats = [
-    { label: 'Active Bids', value: '12', icon: 'gavel', change: '+3 this week', positive: true },
-    { label: 'Matched RFQs', value: '28', icon: 'request_quote', change: '+8 today', positive: true },
-    { label: 'Won Orders', value: '5', icon: 'check_circle', change: '+1 this month', positive: true },
-    { label: 'Revenue', value: formatAmount(48200, currency), icon: 'payments', change: '+12% vs last month', positive: true },
-  ]
-
   const firstName = user?.name?.split(' ')[0] || 'there'
 
   if (isNewUser) {
     return <NewUserHome navigate={navigate} firstName={firstName} />
   }
 
-  return <ReturningUserHome navigate={navigate} firstName={firstName} stats={stats} currency={currency} alerts={alertsList} activity={activityList} />
+  return (
+    <ReturningUserHome
+      navigate={navigate}
+      firstName={firstName}
+      currency={currency}
+      alerts={alertsList}
+      activity={activityList}
+    />
+  )
 }
 
 function NewUserHome({ navigate, firstName }) {
@@ -100,29 +151,57 @@ function NewUserHome({ navigate, firstName }) {
   )
 }
 
-function ReturningUserHome({ navigate, firstName, stats, currency, alerts, activity }) {
+function ReturningUserHome({ navigate, firstName, currency, alerts, activity }) {
+  const statCards = [
+    { label: 'Active Bids',   rawValue: 12,    prefix: '',  suffix: '',  icon: 'gavel',         change: '+3 this week',      positive: true },
+    { label: 'Matched RFQs', rawValue: 28,    prefix: '',  suffix: '',  icon: 'request_quote', change: '+8 today',          positive: true },
+    { label: 'Won Orders',   rawValue: 5,     prefix: '',  suffix: '',  icon: 'check_circle',  change: '+1 this month',     positive: true },
+    { label: 'Revenue',      rawValue: 48200, prefix: currency === 'USD' ? '$' : currency === 'EUR' ? '€' : currency === 'GBP' ? '£' : '', suffix: '', icon: 'payments', change: '+12% vs last month', positive: true },
+  ]
+
   return (
     <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
+      {/* Header */}
+      <motion.div
+        className="flex items-center justify-between mb-6"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
+      >
         <div>
           <h1 className="text-2xl font-semibold text-[#111111]">{getGreeting()}, {firstName} 👋</h1>
           <p className="text-[#9e9e9e] text-sm mt-0.5">Here's what's happening with your account today</p>
         </div>
-        <button onClick={() => navigate('/quote-submission')} className="flex items-center gap-2 bg-[#0f00da] text-white px-4 py-2.5 rounded-full text-sm font-medium hover:bg-[#2d2dff] transition-colors">
+        <button
+          onClick={() => navigate('/quote-submission')}
+          className="flex items-center gap-2 bg-[#0f00da] text-white px-4 py-2.5 rounded-full text-sm font-medium hover:bg-[#2d2dff] transition-colors"
+        >
           <span className="material-symbols-outlined text-[18px]">add</span>
           New Quote
         </button>
-      </div>
+      </motion.div>
 
-      <div className="mb-6">
+      {/* Alerts */}
+      <motion.div
+        className="mb-6"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25, delay: 0.05, ease: [0.25, 0.1, 0.25, 1] }}
+      >
         <div className="flex items-center gap-2 mb-3">
           <span className="material-symbols-outlined text-[18px] text-[#ba1a1a]">notifications</span>
           <h2 className="text-sm font-semibold text-[#111111]">Alerts</h2>
           <span className="bg-[#ba1a1a] text-white text-xs px-1.5 py-0.5 rounded-full">{alerts.length}</span>
         </div>
         <div className="space-y-2">
-          {alerts.map(alert => (
-            <div key={alert.id} className="bg-white border border-[#ebebeb] rounded-xl p-4 flex items-start gap-3">
+          {alerts.map((alert, i) => (
+            <motion.div
+              key={alert.id}
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.2, delay: 0.08 + i * 0.04, ease: [0.25, 0.1, 0.25, 1] }}
+              className="bg-white border border-[#ebebeb] rounded-xl p-4 flex items-start gap-3"
+            >
               <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${alert.color}`}>
                 <span className="material-symbols-outlined text-[18px]">{alert.icon}</span>
               </div>
@@ -131,26 +210,31 @@ function ReturningUserHome({ navigate, firstName, stats, currency, alerts, activ
                 <p className="text-xs text-[#9e9e9e] mt-0.5 truncate">{alert.desc}</p>
                 <p className="text-xs text-[#9e9e9e] mt-1">{alert.time}</p>
               </div>
-              <button onClick={() => navigate(alert.path)} className="flex-shrink-0 text-xs text-[#0f00da] font-medium hover:underline">{alert.action}</button>
-            </div>
+              <button
+                onClick={() => navigate(alert.path)}
+                className="flex-shrink-0 text-xs text-[#0f00da] font-medium hover:underline"
+              >
+                {alert.action}
+              </button>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
+      {/* Stat cards with animated counters */}
       <div className="grid grid-cols-4 gap-4 mb-6">
-        {stats.map(stat => (
-          <div key={stat.label} className="bg-white border border-[#ebebeb] rounded-2xl p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="material-symbols-outlined text-[18px] text-[#0f00da]">{stat.icon}</span>
-              <span className="text-xs text-[#9e9e9e]">{stat.label}</span>
-            </div>
-            <p className="text-2xl font-bold text-[#111111]">{stat.value}</p>
-            <p className={`text-xs mt-1 ${stat.positive ? 'text-[#0f00da]' : 'text-[#ba1a1a]'}`}>{stat.change}</p>
-          </div>
+        {statCards.map((s, i) => (
+          <StatCard key={s.label} {...s} delay={0.12 + i * 0.06} />
         ))}
       </div>
 
-      <div className="bg-white border border-[#ebebeb] rounded-2xl overflow-hidden">
+      {/* Recent Activity */}
+      <motion.div
+        className="bg-white border border-[#ebebeb] rounded-2xl overflow-hidden"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25, delay: 0.38, ease: [0.25, 0.1, 0.25, 1] }}
+      >
         <div className="px-5 py-4 border-b border-[#ebebeb] flex items-center justify-between">
           <h2 className="text-sm font-semibold text-[#111111]">Recent Activity</h2>
           <button onClick={() => navigate('/matched-rfqs')} className="text-xs text-[#0f00da] font-medium hover:underline">View all</button>
@@ -166,8 +250,14 @@ function ReturningUserHome({ navigate, firstName, stats, currency, alerts, activ
             </tr>
           </thead>
           <tbody>
-            {(activity || recentActivity).map(item => (
-              <tr key={item.id} className="border-t border-[#f5f5f5] hover:bg-[#fafafa] transition-colors">
+            {(activity || recentActivity).map((item, i) => (
+              <motion.tr
+                key={item.id}
+                className="border-t border-[#f5f5f5] hover:bg-[#fafafa] transition-colors"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.18, delay: 0.42 + i * 0.05 }}
+              >
                 <td className="px-5 py-3 text-sm text-[#555555]">{item.type}</td>
                 <td className="px-5 py-3 text-sm text-[#111111]">{item.desc}</td>
                 <td className="px-5 py-3 text-sm text-[#555555]">{item.buyer}</td>
@@ -175,11 +265,11 @@ function ReturningUserHome({ navigate, firstName, stats, currency, alerts, activ
                 <td className="px-5 py-3">
                   <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${item.statusColor}`}>{item.status}</span>
                 </td>
-              </tr>
+              </motion.tr>
             ))}
           </tbody>
         </table>
-      </div>
+      </motion.div>
     </div>
   )
 }
