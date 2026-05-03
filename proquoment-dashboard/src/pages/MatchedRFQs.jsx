@@ -251,7 +251,7 @@ export default function MatchedRFQs() {
   return (
     <div className="flex h-screen overflow-hidden">
       {/* ── Left: List Panel ── */}
-      <div className={`${selectedRFQ ? 'w-[46%]' : 'w-full'} flex flex-col border-r border-[#ebebeb] overflow-hidden transition-all duration-200`}>
+      <div className={`${selectedRFQ ? 'hidden md:flex md:w-[46%]' : 'flex w-full'} flex-col border-r border-[#ebebeb] overflow-hidden transition-all duration-200`}>
 
         {/* Header */}
         <div className="px-5 pt-5 pb-0 border-b border-[#ebebeb] flex-shrink-0">
@@ -368,7 +368,7 @@ export default function MatchedRFQs() {
 
       {/* ── Right: Detail Drawer ── */}
       {selectedRFQ && (
-        <div className="flex-1 overflow-y-auto bg-white">
+        <div className="fixed inset-0 md:static md:flex-1 overflow-y-auto bg-white z-50 md:z-auto">
           <BidDrawer
             rfq={selectedRFQ}
             isSaved={savedIds.has(selectedRFQ.id)}
