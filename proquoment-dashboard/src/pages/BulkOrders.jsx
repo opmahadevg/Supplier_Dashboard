@@ -76,9 +76,9 @@ export default function BulkOrders() {
   const filtered = bulkOrders.filter(o => activeTab === 'All' || o.status === activeTab)
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between gap-3 flex-wrap mb-5">
         <div>
           <h1 className="text-xl font-semibold text-[#111111]">Bulk Orders</h1>
           <p className="text-sm text-[#9e9e9e] mt-0.5">Track and manage your bulk production orders</p>
@@ -90,7 +90,7 @@ export default function BulkOrders() {
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-4 gap-4 mb-5">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-5">
         {[
           { label: 'Total Orders', value: '8', icon: 'local_shipping' },
           { label: 'Active', value: '3', icon: 'autorenew' },
@@ -121,7 +121,7 @@ export default function BulkOrders() {
         {filtered.map(order => (
           <div key={order.id} className="bg-white border border-[#ebebeb] rounded-2xl overflow-hidden hover:border-[#c6c4da] transition-colors">
             <div className="p-5">
-              <div className="flex items-start justify-between mb-4">
+              <div className="flex items-start justify-between gap-3 mb-4 flex-wrap">
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-full bg-[#e1e0ff] text-[#0f00da] text-sm font-bold flex items-center justify-center flex-shrink-0">{order.buyerLogo}</div>
                   <div>
@@ -179,7 +179,7 @@ export default function BulkOrders() {
       {/* Detail Side Panel */}
       {selectedOrder && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-end z-50" onClick={() => setSelectedOrder(null)}>
-          <div className="w-[380px] h-full bg-white overflow-y-auto shadow-xl" onClick={e => e.stopPropagation()}>
+          <div className="w-full sm:w-[380px] h-full bg-white overflow-y-auto shadow-xl" onClick={e => e.stopPropagation()}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-5">
                 <h2 className="text-lg font-semibold text-[#111111]">Order Details</h2>
