@@ -551,9 +551,9 @@ export default function ProductCatalogue() {
   const allCategories = ['All', ...categories]
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between gap-3 flex-wrap mb-5">
         <div>
           <h1 className="text-xl font-semibold text-[#111111]">Product Catalogue</h1>
           <p className="text-sm text-[#9e9e9e] mt-0.5">
@@ -621,7 +621,7 @@ export default function ProductCatalogue() {
 
       {/* Product Grid */}
       {filtered.length > 0 && (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map(product => (
             <div
               key={product.id}
