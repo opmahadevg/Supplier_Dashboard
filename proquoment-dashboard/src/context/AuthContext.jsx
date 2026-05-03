@@ -148,11 +148,13 @@ export function AuthProvider({ children }) {
   }
 
   const register = async ({ email, password, name, company, type, role, industry, phone }) => {
+    const redirectTo = `${window.location.origin}/home`
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: { name, company, type: type || 'Supplier', role: role || 'Owner', industry, phone },
+        emailRedirectTo: redirectTo,
       },
     })
     if (error) return { ok: false, error: error.message }
