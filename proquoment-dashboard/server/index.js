@@ -292,7 +292,7 @@ app.post('/api/send-test-notification', async (req, res) => {
 // SPA fallback — must be last, after all API routes
 if (isProd) {
   const distPath = join(__dirname, '../dist')
-  app.get('*', (req, res) => {
+  app.get('/{*path}', (req, res) => {
     const indexPath = join(distPath, 'index.html')
     if (existsSync(indexPath)) {
       res.sendFile(indexPath)
