@@ -1,12 +1,26 @@
 import express from 'express'
 import cors from 'cors'
 import { Resend } from 'resend'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
+import { existsSync } from 'fs'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const isProd = process.env.NODE_ENV === 'production'
 
 const app = express()
-const PORT = 3001
+const PORT = isProd ? (process.env.PORT || 5000) : 3001
 
 app.use(cors())
 app.use(express.json())
+
+// Serve built frontend in production
+if (isProd) {
+  const distPath = join(__dirname, '../dist')
+  if (existsSync(distPath)) {
+    app.use(express.static(distPath))
+  }
+}
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = 'Proquoment <onboarding@resend.dev>'
@@ -275,6 +289,19 @@ app.post('/api/send-test-notification', async (req, res) => {
   }
 })
 
-app.listen(PORT, () => {
-  console.log(`Proquoment API server running on port ${PORT}`)
+// SPA fallback — must be last, after all API routes
+if (isProd) {
+  const distPath = join(__dirname, '../dist')
+  app.get('*', (req, res) => {
+    const indexPath = join(distPath, 'index.html')
+    if (existsSync(indexPath)) {
+      res.sendFile(indexPath)
+    } else {
+      res.status(404).send('Not found')
+    }
+  })
+}
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Proquoment API server running on port ${PORT} [${isProd ? 'production' : 'development'}]`)
 })
