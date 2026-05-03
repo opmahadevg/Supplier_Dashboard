@@ -26,9 +26,9 @@ export default function SampleOrders() {
   )
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between gap-3 flex-wrap mb-5">
         <div>
           <h1 className="text-xl font-semibold text-[#111111]">Sample Orders</h1>
           <p className="text-sm text-[#9e9e9e] mt-0.5">Manage sample requests from buyers</p>
@@ -40,7 +40,7 @@ export default function SampleOrders() {
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-4 gap-4 mb-5">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-5">
         {[
           { label: 'Total Requests', value: '12', icon: 'science' },
           { label: 'Pending', value: '3', icon: 'hourglass_empty' },
@@ -71,8 +71,8 @@ export default function SampleOrders() {
       </div>
 
       {/* Orders Table */}
-      <div className="bg-white border border-[#ebebeb] rounded-2xl overflow-hidden">
-        <table className="w-full">
+      <div className="bg-white border border-[#ebebeb] rounded-2xl overflow-x-auto">
+        <table className="w-full min-w-[700px]">
           <thead>
             <tr className="border-b border-[#f3f3f3] bg-white">
               <th className="px-5 py-3 text-left text-xs font-medium text-[#9e9e9e]">Order ID</th>
