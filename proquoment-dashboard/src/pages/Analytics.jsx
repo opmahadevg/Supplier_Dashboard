@@ -145,7 +145,7 @@ function KpiCard({ label, rawValue, formattedValue, change, icon, delay = 0 }) {
 
 export default function Analytics() {
   const { settings } = useSettings()
-  const currency = settings.preferences.currency
+  const currency = settings?.preferences?.currency ?? 'USD'
   const [period, setPeriod] = useState('6M')
   const [monthlyData, setMonthlyData] = useState(null)
 
@@ -185,8 +185,8 @@ export default function Analytics() {
     const y = 180 - (v / displayMaxRev) * 160
     return { x, y, v }
   })
-  const polyline = points.map(p => `${p.x},${p.y}`).join(' ')
-  const polygon  = polyline + ` 400,180 0,180`
+  const pathD   = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ')
+  const areaD   = pathD + ` L 400 180 L 0 180 Z`
 
   /* ── Donut conic stop ── */
   let cumulative = 0
@@ -278,20 +278,21 @@ export default function Analytics() {
                       <stop offset="100%" stopColor="#0f00da" stopOpacity="0" />
                     </linearGradient>
                   </defs>
-                  <motion.polygon
+                  <motion.path
                     fill="url(#revGrad)"
+                    stroke="none"
+                    d={areaD}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.4, delay: 0.1 }}
-                    points={polygon}
                   />
-                  <motion.polyline
+                  <motion.path
                     fill="none"
                     stroke="#0f00da"
                     strokeWidth="2.5"
                     strokeLinejoin="round"
                     strokeLinecap="round"
-                    points={polyline}
+                    d={pathD}
                     initial={{ pathLength: 0, opacity: 0 }}
                     animate={{ pathLength: 1, opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}

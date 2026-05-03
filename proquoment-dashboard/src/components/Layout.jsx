@@ -2,6 +2,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import Sidebar from './Sidebar'
 import PageTransition from './PageTransition'
+import ErrorBoundary from './ErrorBoundary'
 
 export default function Layout() {
   const location = useLocation()
@@ -17,7 +18,9 @@ export default function Layout() {
       >
         <AnimatePresence mode="wait" initial={false}>
           <PageTransition key={location.pathname}>
-            <Outlet />
+            <ErrorBoundary key={location.pathname}>
+              <Outlet />
+            </ErrorBoundary>
           </PageTransition>
         </AnimatePresence>
       </main>
