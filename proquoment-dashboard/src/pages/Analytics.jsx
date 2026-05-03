@@ -132,9 +132,9 @@ export default function Analytics() {
   }).join(', ')
 
   return (
-    <div className="p-6 overflow-y-auto">
+    <div className="p-4 md:p-6 overflow-y-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between gap-3 flex-wrap mb-6">
         <div>
           <h1 className="text-xl font-semibold text-[#111111]">Analytics</h1>
           <p className="text-sm text-[#9e9e9e] mt-0.5">
@@ -159,7 +159,7 @@ export default function Analytics() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
         {kpis.map(k => (
           <div key={k.label} className="bg-white border border-[#ebebeb] rounded-2xl p-4">
             <div className="flex items-center gap-2 mb-1">
@@ -172,9 +172,9 @@ export default function Analytics() {
         ))}
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         {/* Revenue Chart */}
-        <div className="col-span-2 bg-white border border-[#ebebeb] rounded-2xl p-5">
+        <div className="md:col-span-2 bg-white border border-[#ebebeb] rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-[#111111]">Revenue Trend</h2>
             <span className="text-xs text-[#9e9e9e]">{currency}</span>
@@ -246,9 +246,9 @@ export default function Analytics() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Top Products */}
-        <div className="col-span-2 bg-white border border-[#ebebeb] rounded-2xl p-5">
+        <div className="md:col-span-2 bg-white border border-[#ebebeb] rounded-2xl p-5">
           <h2 className="text-sm font-semibold text-[#111111] mb-4">Top Products by Revenue</h2>
           <div className="space-y-4">
             {topProducts.map(p => (
