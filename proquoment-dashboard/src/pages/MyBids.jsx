@@ -88,9 +88,9 @@ export default function MyBids() {
   })
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between gap-3 flex-wrap mb-6">
         <div>
           <h1 className="text-xl font-semibold text-[#111111]">My Bids</h1>
           <p className="text-sm text-[#9e9e9e] mt-0.5">Track and manage all your submitted bids</p>
@@ -102,7 +102,7 @@ export default function MyBids() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
         {[
           { label: 'Total Bids', value: '12', icon: 'gavel', color: 'text-[#0f00da]' },
           { label: 'Active', value: '5', icon: 'pending', color: 'text-[#0f00da]' },
@@ -133,8 +133,8 @@ export default function MyBids() {
       </div>
 
       {/* Bids Table */}
-      <div className="bg-white border border-[#ebebeb] rounded-2xl overflow-hidden">
-        <table className="w-full">
+      <div className="bg-white border border-[#ebebeb] rounded-2xl overflow-x-auto">
+        <table className="w-full min-w-[600px]">
           <thead>
             <tr className="border-b border-[#f3f3f3] bg-white">
               <th className="px-5 py-3 text-left text-xs font-medium text-[#9e9e9e]">RFQ / Product</th>
@@ -188,7 +188,7 @@ export default function MyBids() {
       {/* Bid Detail Panel */}
       {selectedBid && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-end z-50" onClick={() => setSelectedBid(null)}>
-          <div className="w-[420px] h-full bg-white overflow-y-auto shadow-xl" onClick={e => e.stopPropagation()}>
+          <div className="w-full sm:w-[420px] h-full bg-white overflow-y-auto shadow-xl" onClick={e => e.stopPropagation()}>
             <div className="p-6">
               <div className="flex items-center justify-between mb-5">
                 <h2 className="text-lg font-semibold text-[#111111]">Bid Details</h2>
