@@ -154,7 +154,7 @@ export default function Settings() {
   }
 
   return (
-    <div className="p-6 max-w-2xl">
+    <div className="p-4 md:p-6 max-w-2xl">
       {toast && <Toast message={toast} onClose={() => setToast(null)} />}
 
       <div className="mb-5">
