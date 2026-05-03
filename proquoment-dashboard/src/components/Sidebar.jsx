@@ -64,7 +64,7 @@ export default function Sidebar() {
     <motion.aside
       animate={{ width: collapsed ? 64 : 240 }}
       transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
-      className="min-h-screen bg-white border-r border-[#f0f0f0] flex flex-col py-5 flex-shrink-0 sticky top-0 h-screen overflow-visible no-scrollbar"
+      className="hidden md:flex min-h-screen bg-white border-r border-[#f0f0f0] flex-col py-5 flex-shrink-0 sticky top-0 h-screen overflow-visible no-scrollbar"
     >
       {/* Logo + Collapse Toggle */}
       <div className={`mb-7 flex items-center flex-shrink-0 ${collapsed ? 'flex-col gap-3 px-0' : 'px-4 justify-between'}`}>
