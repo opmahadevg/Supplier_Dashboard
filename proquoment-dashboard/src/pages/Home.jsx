@@ -107,7 +107,7 @@ export default function Home() {
 
 function NewUserHome({ navigate, firstName }) {
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div className="p-4 md:p-8 max-w-4xl mx-auto">
       <div className="mb-8">
         <h1 className="text-2xl font-semibold text-[#111111]">Welcome to Proquoment, {firstName}! 👋</h1>
         <p className="text-[#9e9e9e] mt-1">Let's get your supplier profile set up to start receiving RFQ matches.</p>
@@ -135,7 +135,7 @@ function NewUserHome({ navigate, firstName }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <button onClick={() => navigate('/matched-rfqs')} className="bg-[#0f00da] text-white rounded-2xl p-5 text-left hover:bg-[#2d2dff] transition-colors">
           <span className="material-symbols-outlined text-[28px] mb-2">request_quote</span>
           <p className="font-semibold">Browse RFQs</p>
@@ -160,10 +160,10 @@ function ReturningUserHome({ navigate, firstName, currency, alerts, activity }) 
   ]
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       {/* Header */}
       <motion.div
-        className="flex items-center justify-between mb-6"
+        className="flex items-center justify-between gap-3 flex-wrap mb-6"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
@@ -222,7 +222,7 @@ function ReturningUserHome({ navigate, firstName, currency, alerts, activity }) 
       </motion.div>
 
       {/* Stat cards with animated counters */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
         {statCards.map((s, i) => (
           <StatCard key={s.label} {...s} delay={0.12 + i * 0.06} />
         ))}
@@ -230,7 +230,7 @@ function ReturningUserHome({ navigate, firstName, currency, alerts, activity }) 
 
       {/* Recent Activity */}
       <motion.div
-        className="bg-white border border-[#ebebeb] rounded-2xl overflow-hidden"
+        className="bg-white border border-[#ebebeb] rounded-2xl overflow-x-auto"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25, delay: 0.38, ease: [0.25, 0.1, 0.25, 1] }}
