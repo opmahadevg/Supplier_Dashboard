@@ -68,6 +68,7 @@ export default function Messages() {
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState(conversations[0].messages)
   const [search, setSearch] = useState('')
+  const [mobileView, setMobileView] = useState('list')
   const messagesEndRef = useRef(null)
 
   useEffect(() => {
@@ -87,6 +88,7 @@ export default function Messages() {
   const handleSelect = (conv) => {
     setActiveConv(conv)
     setMessages(conv.messages)
+    setMobileView('chat')
   }
 
   const handleSend = async (e) => {
@@ -109,8 +111,10 @@ export default function Messages() {
   return (
     <div className="flex h-screen overflow-hidden bg-white">
       {/* Left: Conversation List */}
-      <div className="w-[30%] min-w-[260px] flex flex-col border-r border-[#ebebeb] bg-white overflow-hidden">
-        {/* Header */}
+      <div className={`
+        ${mobileView === 'chat' ? 'hidden md:flex' : 'flex'}
+        w-full md:w-[30%] md:min-w-[260px] flex-col border-r border-[#ebebeb] bg-white overflow-hidden
+      `}>
         <div className="px-4 pt-5 pb-3 flex-shrink-0">
           <h1 className="text-lg font-semibold text-[#111111] mb-3">Messages</h1>
           <div className="flex items-center gap-2 bg-[#f7f7f7] rounded-full px-3 py-2">
@@ -124,19 +128,18 @@ export default function Messages() {
           </div>
         </div>
 
-        {/* Conversations */}
         <div className="flex-1 overflow-y-auto">
           {filtered.map(conv => (
             <div
               key={conv.id}
               onClick={() => handleSelect(conv)}
-              className={`flex items-start gap-3 px-4 py-3 cursor-pointer border-b border-[#f3f3f3] hover:bg-white transition-colors ${activeConv.id === conv.id ? 'bg-[#f7f7f7]' : ''}`}
+              className={`flex items-start gap-3 px-4 py-3 cursor-pointer border-b border-[#f3f3f3] hover:bg-[#fafafa] transition-colors ${activeConv.id === conv.id ? 'bg-[#f7f7f7]' : ''}`}
             >
               <div className="relative flex-shrink-0">
                 <div className="w-10 h-10 rounded-full bg-[#e1e0ff] text-[#0f00da] flex items-center justify-center text-xs font-bold">
                   {conv.avatar}
                 </div>
-                {conv.online && <div className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-white"></div>}
+                {conv.online && <div className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-white" />}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-0.5">
@@ -156,24 +159,33 @@ export default function Messages() {
       </div>
 
       {/* Right: Chat Panel */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className={`
+        ${mobileView === 'list' ? 'hidden md:flex' : 'flex'}
+        flex-1 flex-col overflow-hidden
+      `}>
         {/* Chat Header */}
-        <div className="px-5 py-4 border-b border-[#ebebeb] bg-white flex items-center gap-3 flex-shrink-0">
+        <div className="px-4 md:px-5 py-4 border-b border-[#ebebeb] bg-white flex items-center gap-3 flex-shrink-0">
+          <button
+            className="md:hidden w-8 h-8 rounded-full hover:bg-[#f5f5f5] flex items-center justify-center flex-shrink-0"
+            onClick={() => setMobileView('list')}
+          >
+            <span className="material-symbols-outlined text-[20px] text-[#555555]">arrow_back</span>
+          </button>
           <div className="relative">
             <div className="w-9 h-9 rounded-full bg-[#e1e0ff] text-[#0f00da] flex items-center justify-center text-xs font-bold">
               {activeConv.avatar}
             </div>
-            {activeConv.online && <div className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-white"></div>}
+            {activeConv.online && <div className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-white" />}
           </div>
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-[#111111]">{activeConv.name}</p>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-[#111111] truncate">{activeConv.name}</p>
             <p className="text-xs text-[#9e9e9e]">{activeConv.online ? 'Online' : 'Offline'}</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             <button className="w-9 h-9 rounded-full hover:bg-[#f5f5f5] flex items-center justify-center transition-colors">
               <span className="material-symbols-outlined text-[20px] text-[#9e9e9e]">call</span>
             </button>
-            <button className="w-9 h-9 rounded-full hover:bg-[#f5f5f5] flex items-center justify-center transition-colors">
+            <button className="hidden sm:flex w-9 h-9 rounded-full hover:bg-[#f5f5f5] items-center justify-center transition-colors">
               <span className="material-symbols-outlined text-[20px] text-[#9e9e9e]">video_call</span>
             </button>
             <button className="w-9 h-9 rounded-full hover:bg-[#f5f5f5] flex items-center justify-center transition-colors">
@@ -183,7 +195,7 @@ export default function Messages() {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+        <div className="flex-1 overflow-y-auto px-4 md:px-5 py-4 space-y-3">
           {messages.map(msg => (
             <div key={msg.id} className={`flex ${msg.from === 'me' ? 'justify-end' : 'justify-start'}`}>
               {msg.from === 'them' && (
@@ -191,7 +203,7 @@ export default function Messages() {
                   {activeConv.avatar[0]}
                 </div>
               )}
-              <div className={`max-w-[65%] ${msg.from === 'me' ? 'order-1' : ''}`}>
+              <div className={`max-w-[75%] sm:max-w-[65%] ${msg.from === 'me' ? 'order-1' : ''}`}>
                 <div className={`px-4 py-2.5 rounded-2xl text-sm ${msg.from === 'me' ? 'bg-[#0f00da] text-white rounded-br-sm' : 'bg-white text-[#111111] border border-[#ebebeb] rounded-bl-sm'}`}>
                   {msg.text}
                 </div>
@@ -203,7 +215,7 @@ export default function Messages() {
         </div>
 
         {/* Input */}
-        <div className="px-5 py-4 border-t border-[#ebebeb] bg-white flex-shrink-0">
+        <div className="px-4 md:px-5 py-4 border-t border-[#ebebeb] bg-white flex-shrink-0">
           <form onSubmit={handleSend} className="flex items-end gap-3">
             <div className="flex-1 border border-[#ebebeb] rounded-2xl flex items-center px-4 py-2.5 gap-2 bg-white focus-within:border-[#0f00da]">
               <input
@@ -212,7 +224,7 @@ export default function Messages() {
                 placeholder="Type a message..."
                 className="flex-1 bg-transparent text-sm outline-none text-[#111111] placeholder-[#767589]"
               />
-              <button type="button" className="flex-shrink-0">
+              <button type="button" className="flex-shrink-0 hidden sm:block">
                 <span className="material-symbols-outlined text-[20px] text-[#9e9e9e] hover:text-[#0f00da]">attach_file</span>
               </button>
             </div>
