@@ -68,9 +68,9 @@ export default function CompanyProfile() {
   }
 
   return (
-    <div className="p-6 max-w-3xl">
+    <div className="p-4 md:p-6 max-w-3xl">
       {/* Header */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between gap-3 flex-wrap mb-5">
         <div>
           <h1 className="text-xl font-semibold text-[#111111]">Company Profile</h1>
           <p className="text-sm text-[#9e9e9e] mt-0.5">Manage your company information visible to buyers</p>
