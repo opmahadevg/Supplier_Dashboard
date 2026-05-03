@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useSettings, formatAmount } from '../context/SettingsContext'
 import { getAnalyticsMonthly } from '../lib/db'
 
@@ -229,20 +229,17 @@ export default function Analytics() {
       </div>
 
       {/* KPI Cards */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={period + '-kpis'}
-          className="grid grid-cols-4 gap-4 mb-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.18 }}
-        >
-          {kpis.map((k, i) => (
-            <KpiCard key={k.label} {...k} delay={i * 0.05} />
-          ))}
-        </motion.div>
-      </AnimatePresence>
+      <motion.div
+        key={period + '-kpis'}
+        className="grid grid-cols-4 gap-4 mb-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.18 }}
+      >
+        {kpis.map((k, i) => (
+          <KpiCard key={k.label} {...k} delay={i * 0.05} />
+        ))}
+      </motion.div>
 
       <div className="grid grid-cols-3 gap-4 mb-4">
         {/* Revenue Chart */}
@@ -258,17 +255,15 @@ export default function Analytics() {
               ))}
             </div>
             <div className="ml-14">
-              <AnimatePresence mode="wait">
-                <motion.svg
-                  key={period + '-chart'}
-                  viewBox="0 0 400 180"
-                  className="w-full"
-                  preserveAspectRatio="none"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                >
+              <motion.svg
+                key={period + '-chart'}
+                viewBox="0 0 400 180"
+                className="w-full"
+                preserveAspectRatio="none"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.25 }}
+              >
                   {[0, 45, 90, 135, 180].map((y, i) => (
                     <line key={i} x1="0" y1={y} x2="400" y2={y} stroke="#f0f0f0" strokeWidth="1" />
                   ))}
@@ -311,8 +306,7 @@ export default function Analytics() {
                       transition={{ duration: 0.25, delay: 0.2 + i * 0.05 }}
                     />
                   ))}
-                </motion.svg>
-              </AnimatePresence>
+              </motion.svg>
               <div className="flex justify-between mt-1">
                 {displayMonths.map(m => (
                   <span key={m} className="text-xs text-[#9e9e9e]">{m}</span>
@@ -364,15 +358,13 @@ export default function Analytics() {
         {/* Top Products */}
         <div className="col-span-2 bg-white border border-[#ebebeb] rounded-2xl p-5">
           <h2 className="text-sm font-semibold text-[#111111] mb-4">Top Products by Revenue</h2>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={period + '-products'}
-              className="space-y-4"
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.22 }}
-            >
+          <motion.div
+            key={period + '-products'}
+            className="space-y-4"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.22 }}
+          >
               {topProducts.map((p, i) => (
                 <motion.div
                   key={p.name}
@@ -397,8 +389,7 @@ export default function Analytics() {
                   </div>
                 </motion.div>
               ))}
-            </motion.div>
-          </AnimatePresence>
+          </motion.div>
         </div>
 
         {/* Win Rate Gauge */}
