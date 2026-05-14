@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /login
+Allow: /register
+Allow: /reset-password
+Disallow: /home
+Disallow: /matched-rfqs
+Disallow: /my-bids
+Disallow: /messages
+Disallow: /analytics
+Disallow: /product-catalogue
+Disallow: /sample-orders
+Disallow: /bulk-orders
+Disallow: /company-profile
+Disallow: /settings
+Disallow: /quote-submission
+
+Sitemap: https://supplier.proquoment.in/sitemap.xml
